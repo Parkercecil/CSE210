@@ -1,25 +1,28 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 public class Entry
 {
     public string Prompt { get; set; }
     public string Response { get; set; }
     public string Date { get; set; }
+    public string Emotion { get; set; }  // New property for emotion
 
     // Constructor to initialize the entry
-    public Entry(string prompt, string response)
+    public Entry(string prompt, string response, string emotion)
     {
         Prompt = prompt;
         Response = response;
-        Date = DateTime.Now.ToString("yyyy-MM-dd"); // Store the current date as a string
+        Date = DateTime.Now.ToString("yyyy-MM-dd");
+        Emotion = emotion;
     }
 
     // Method to display the entry in a readable format
     public void DisplayEntry()
     {
-        Console.WriteLine($"Date: {Date}");
+        Console.WriteLine($"Date: {Date} | Emotion: {Emotion}");
         Console.WriteLine($"Prompt: {Prompt}");
         Console.WriteLine($"Response: {Response}\n");
     }
@@ -37,9 +40,9 @@ public class Journal
     }
 
     // Method to add an entry to the journal
-    public void AddEntry(string prompt, string response)
+    public void AddEntry(string prompt, string response, string emotion)
     {
-        Entries.Add(new Entry(prompt, response));
+        Entries.Add(new Entry(prompt, response, emotion));
     }
 
     // Method to display all entries
@@ -58,7 +61,7 @@ public class Journal
         {
             foreach (var entry in Entries)
             {
-                writer.WriteLine($"{entry.Date}{separator}{entry.Prompt}{separator}{entry.Response}");
+                writer.WriteLine($"{entry.Date}{separator}{entry.Prompt}{separator}{entry.Response}{separator}{entry.Emotion}");
             }
         }
         Console.WriteLine($"Journal saved to {filename}");
@@ -73,9 +76,9 @@ public class Journal
             foreach (var line in File.ReadLines(filename))
             {
                 var parts = line.Split(new string[] { separator }, StringSplitOptions.None);
-                if (parts.Length == 3)
+                if (parts.Length == 4)
                 {
-                    Entries.Add(new Entry(parts[1], parts[2]) { Date = parts[0] });
+                    Entries.Add(new Entry(parts[1], parts[2], parts[3]) { Date = parts[0] });
                 }
             }
             Console.WriteLine("Journal loaded from file.");
@@ -83,6 +86,30 @@ public class Journal
         else
         {
             Console.WriteLine("File not found.");
+        }
+    }
+
+    // Method to search entries by emotion
+    public void SearchByEmotion(string emotion)
+    {
+        var filteredEntries = Entries.Where(entry => entry.Emotion.Equals(emotion, StringComparison.OrdinalIgnoreCase)).ToList();
+        foreach (var entry in filteredEntries)
+        {
+            entry.DisplayEntry();
+        }
+    }
+
+    // Method to show emotion statistics
+    public void ShowEmotionStatistics()
+    {
+        var emotionStats = Entries
+            .GroupBy(entry => entry.Emotion)
+            .Select(group => new { Emotion = group.Key, Count = group.Count() })
+            .ToList();
+
+        foreach (var stat in emotionStats)
+        {
+            Console.WriteLine($"{stat.Emotion}: {stat.Count} entries");
         }
     }
 }
@@ -101,6 +128,8 @@ public class Program
             "If I had one thing I could do over today, what would it be?"
         };
 
+        string[] emotions = new string[] { "Happy", "Sad", "Grateful", "Angry", "Anxious", "Neutral" };
+
         while (true)
         {
             Console.Clear();
@@ -109,7 +138,9 @@ public class Program
             Console.WriteLine("2. Display journal");
             Console.WriteLine("3. Save journal to file");
             Console.WriteLine("4. Load journal from file");
-            Console.WriteLine("5. Quit");
+            Console.WriteLine("5. Search entries by emotion");
+            Console.WriteLine("6. Show emotion statistics");
+            Console.WriteLine("7. Quit");
             Console.Write("Choose an option: ");
             string choice = Console.ReadLine();
 
@@ -121,7 +152,24 @@ public class Program
                     Console.WriteLine($"Prompt: {randomPrompt}");
                     Console.Write("Your response: ");
                     string response = Console.ReadLine();
-                    journal.AddEntry(randomPrompt, response);
+
+                    Console.WriteLine("How did you feel today?");
+                    for (int i = 0; i < emotions.Length; i++)
+                    {
+                        Console.WriteLine($"{i + 1}. {emotions[i]}");
+                    }
+                    string emotionChoice = Console.ReadLine();
+                    string emotion = emotionChoice switch
+                    {
+                        "1" => "Happy",
+                        "2" => "Sad",
+                        "3" => "Grateful",
+                        "4" => "Angry",
+                        "5" => "Anxious",
+                        _ => "Neutral"
+                    };
+
+                    journal.AddEntry(randomPrompt, response, emotion);
                     break;
 
                 case "2":
@@ -150,6 +198,26 @@ public class Program
                     break;
 
                 case "5":
+                    // Search entries by emotion
+                    Console.WriteLine("Enter emotion to filter by: ");
+                    foreach (var e in emotions)
+                    {
+                        Console.WriteLine(e);
+                    }
+                    string emotionFilter = Console.ReadLine();
+                    journal.SearchByEmotion(emotionFilter);
+                    Console.WriteLine("Press any key to return to the menu...");
+                    Console.ReadKey();
+                    break;
+
+                case "6":
+                    // Show emotion statistics
+                    journal.ShowEmotionStatistics();
+                    Console.WriteLine("Press any key to return to the menu...");
+                    Console.ReadKey();
+                    break;
+
+                case "7":
                     // Quit the program
                     return;
 
