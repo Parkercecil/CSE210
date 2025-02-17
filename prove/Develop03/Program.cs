@@ -2,73 +2,112 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Scripture
-{
-    public string Reference { get; set; }
-    public string Text { get; set; }
-    private List<string> words;
-    private HashSet<int> hiddenIndexes;
-
-    public Scripture(string reference, string text)
-    {
-        Reference = reference;
-        Text = text;
-        words = Text.Split(' ').ToList();
-        hiddenIndexes = new HashSet<int>();
-    }
-
-    public void HideRandomWord()
-    {
-        // Hide a random word (even if it's already hidden)
-        Random random = new Random();
-        int index = random.Next(words.Count);
-        hiddenIndexes.Add(index);
-    }
-
-    public bool IsComplete()
-    {
-        return hiddenIndexes.Count == words.Count;
-    }
-
-    public void Display()
-    {
-        Console.Clear();
-        Console.WriteLine(Reference);
-        Console.WriteLine(string.Join(" ", words.Select((word, index) => hiddenIndexes.Contains(index) ? "_____" : word)));
-    }
-}
-
 class Program
 {
     static void Main(string[] args)
     {
-        // Example scripture
-        var scripture = new Scripture("John 3:16", "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.");
+        Scripture scripture = new Scripture("John 3:16", "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.");
 
-        // Main loop
         while (true)
         {
+            Console.Clear();
             scripture.Display();
-            
-            // Prompt user
-            Console.WriteLine("\nPress Enter to hide a word or type 'quit' to exit.");
-            string userInput = Console.ReadLine();
 
-            if (userInput.ToLower() == "quit")
-            {
+            Console.WriteLine("\nPress Enter to hide some words or type 'quit' to exit.");
+            string input = Console.ReadLine().Trim().ToLower();
+
+            if (input == "quit")
                 break;
-            }
-            
-            // Hide a random word
-            scripture.HideRandomWord();
 
-            // If all words are hidden, end the program
-            if (scripture.IsComplete())
+            if (scripture.HideRandomWords())
             {
+                Console.Clear();
                 scripture.Display();
-                Console.WriteLine("\nAll words are hidden. The program is ending.");
+            }
+            else
+            {
+                Console.WriteLine("All words are hidden. Program will exit.");
                 break;
             }
         }
+    }
+}
+
+public class Scripture
+{
+    private ScriptureReference reference;
+    private List<Word> words;
+
+    public Scripture(string referenceText, string scriptureText)
+    {
+        reference = new ScriptureReference(referenceText);
+        words = scriptureText.Split(' ').Select(word => new Word(word)).ToList();
+    }
+
+    public void Display()
+    {
+        Console.WriteLine($"Scripture Reference: {reference.GetReference()}");
+        Console.WriteLine("Scripture Text:");
+        foreach (var word in words)
+        {
+            word.Display();
+        }
+    }
+
+    public bool HideRandomWords()
+    {
+        // Check if all words are hidden
+        if (words.All(w => w.IsHidden))
+            return false;
+
+        // Select a random word to hide that is not yet hidden
+        Random rand = new Random();
+        var nonHiddenWords = words.Where(w => !w.IsHidden).ToList();
+        if (nonHiddenWords.Count == 0)
+            return false;
+
+        var wordToHide = nonHiddenWords[rand.Next(nonHiddenWords.Count)];
+        wordToHide.Hide();
+        return true;
+    }
+}
+
+public class ScriptureReference
+{
+    public string ReferenceText { get; private set; }
+
+    public ScriptureReference(string referenceText)
+    {
+        ReferenceText = referenceText;
+    }
+
+    public string GetReference()
+    {
+        return ReferenceText;
+    }
+}
+
+public class Word
+{
+    public string Text { get; private set; }
+    public bool IsHidden { get; private set; }
+
+    public Word(string text)
+    {
+        Text = text;
+        IsHidden = false;
+    }
+
+    public void Hide()
+    {
+        IsHidden = true;
+    }
+
+    public void Display()
+    {
+        if (IsHidden)
+            Console.Write("_____ ");
+        else
+            Console.Write(Text + " ");
     }
 }
