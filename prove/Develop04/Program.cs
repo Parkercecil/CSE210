@@ -173,7 +173,7 @@ namespace ActivityProgram
                 Console.Clear();
                 Console.WriteLine("WELCOME TO THE MINDFULNESS PROGRAM!");
                 Console.WriteLine("Please select an activity!:");
-                Console.WriteLine("__________________________");
+                Console.WriteLine("---------------------------");
                 Console.WriteLine("1. Breathing Activity");
                 Console.WriteLine("2. Reflection Activity");
                 Console.WriteLine("3. Listing Activity");
