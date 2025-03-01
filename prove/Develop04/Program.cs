@@ -171,8 +171,9 @@ namespace ActivityProgram
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine("Welcome to the Activity Program!");
-                Console.WriteLine("Please select an activity:");
+                Console.WriteLine("WELCOME TO THE MINDFULNESS PROGRAM!");
+                Console.WriteLine("Please select an activity!:");
+                Console.WriteLine("__________________________");
                 Console.WriteLine("1. Breathing Activity");
                 Console.WriteLine("2. Reflection Activity");
                 Console.WriteLine("3. Listing Activity");
