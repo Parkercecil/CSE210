@@ -34,13 +34,18 @@ namespace ActivityProgram
             DisplayPauseAnimation(3);
         }
 
+        // Spinner animation during pauses
         protected void DisplayPauseAnimation(int seconds)
         {
+            string[] spinner = new string[] { "|", "/", "-", "\\" };
+            int spinnerIndex = 0;
+
             for (int i = 0; i < seconds; i++)
             {
-                Console.Write(".");
+                Console.Write($"[{spinner[spinnerIndex]}] ");
+                spinnerIndex = (spinnerIndex + 1) % spinner.Length;
                 Thread.Sleep(1000); // Delay 1 second
-                Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                Console.SetCursorPosition(Console.CursorLeft - 4, Console.CursorTop); // Move cursor back
             }
             Console.WriteLine();
         }
