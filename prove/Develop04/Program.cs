@@ -178,7 +178,8 @@ namespace ActivityProgram
                 Console.WriteLine("2. Reflection Activity");
                 Console.WriteLine("3. Listing Activity");
                 Console.WriteLine("4. Exit");
-
+                Console.WriteLine();
+                
                 string choice = Console.ReadLine();
                 Activity selectedActivity = null;
 
