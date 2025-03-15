@@ -110,10 +110,7 @@ class GoalTracker
 
     public void CreateGoal()
     {
-        Console.WriteLine("Choose a goal type:");
-        Console.WriteLine("1. Simple");
-        Console.WriteLine("2. Eternal");
-        Console.WriteLine("3. Checklist");
+        Console.WriteLine("Choose a goal type:\n1. Simple\n2. Eternal\n3. Checklist");
         int choice = int.Parse(Console.ReadLine());
 
         Console.Write("Enter goal name: ");
@@ -123,14 +120,8 @@ class GoalTracker
         Console.Write("Enter points: ");
         int points = int.Parse(Console.ReadLine());
 
-        if (choice == 1)
-        {
-            _goals.Add(new SimpleGoal(name, desc, points));
-        }
-        else if (choice == 2)
-        {
-            _goals.Add(new EternalGoal(name, desc, points));
-        }
+        if (choice == 1) _goals.Add(new SimpleGoal(name, desc, points));
+        else if (choice == 2) _goals.Add(new EternalGoal(name, desc, points));
         else if (choice == 3)
         {
             Console.Write("Enter target count: ");
@@ -143,7 +134,7 @@ class GoalTracker
 
     public void RecordEvent()
     {
-        Console.WriteLine("Select a goal to record: ");
+        Console.WriteLine("Select a goal to record:");
         for (int i = 0; i < _goals.Count; i++)
         {
             Console.WriteLine($"{i + 1}. {_goals[i].GetStatus()} {_goals[i].SaveFormat()}");
@@ -195,10 +186,7 @@ class GoalTracker
             }
             Console.WriteLine("Goals successfully loaded.");
         }
-        else
-        {
-            Console.WriteLine("No saved goals found.");
-        }
+        else Console.WriteLine("No saved goals found.");
     }
 
     public int GetTotalScore() => _totalScore;
@@ -212,30 +200,17 @@ class Program
         GoalTracker tracker = new GoalTracker();
         while (true)
         {
-            Console.WriteLine("\nWelcome to The Goals Menu:");
-            Console.WriteLine("1. Create a New Goal");
-            Console.WriteLine("2. List Goals");
-            Console.WriteLine("3. Save Goals");
-            Console.WriteLine("4. Load Goals");
-            Console.WriteLine("5. Record Event");
-            Console.WriteLine("6. Quit");
+            Console.WriteLine("\nWelcome to The Goals Menu:\n1. Create a New Goal\n2. List Goals\n3. Save Goals\n4. Load Goals\n5. Record Event\n6. Quit");
             Console.WriteLine($"Current Points: {tracker.GetTotalScore()} pts");
             Console.Write("Select a choice from the Menu: ");
 
-            int choice;
-            if (!int.TryParse(Console.ReadLine(), out choice))
-            {
-                Console.WriteLine("Invalid input. Please enter a number between 1 and 6.");
-                continue;
-            }
-
+            int choice = int.Parse(Console.ReadLine());
             if (choice == 1) tracker.CreateGoal();
             else if (choice == 2) tracker.DisplayGoals();
             else if (choice == 3) tracker.SaveGoals();
             else if (choice == 4) tracker.LoadGoals();
             else if (choice == 5) tracker.RecordEvent();
             else if (choice == 6) break;
-            else Console.WriteLine("Invalid choice. Please enter a number between 1 and 6.");
         }
     }
 }
