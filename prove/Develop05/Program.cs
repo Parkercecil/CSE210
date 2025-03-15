@@ -101,7 +101,10 @@ class GoalTracker
 
     public void CreateGoal()
     {
-        Console.WriteLine("Choose a goal type: 1. Simple 2. Eternal 3. Checklist");
+        Console.WriteLine("Choose a goal type:");
+        Console.WriteLine("1. Simple");
+        Console.WriteLine("2. Eternal");
+        Console.WriteLine("3. Checklist");
         int choice = int.Parse(Console.ReadLine());
         
         Console.Write("Enter goal name: ");
