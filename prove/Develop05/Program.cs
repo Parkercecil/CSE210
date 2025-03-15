@@ -10,7 +10,9 @@ abstract class Goal
     protected int _points;
     protected bool _isComplete;
 
-    public Goal(string name, string description, int points)
+    public Goal (string name, 
+    string description, 
+    int points)
     {
         _name = name;
         _description = description;
@@ -28,7 +30,9 @@ abstract class Goal
 // Simple goal that can be completed once
 class SimpleGoal : Goal
 {
-    public SimpleGoal(string name, string description, int points) : base(name, description, points) { }
+    public SimpleGoal(string name, 
+    string description, 
+    int points) : base(name, description, points) { }
 
     public override void RecordEvent()
     {
