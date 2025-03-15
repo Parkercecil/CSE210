@@ -44,7 +44,7 @@ class SimpleGoal : Goal
         }
     }
 
-    public override string GetStatus() => _isComplete ? "[X]" : "[ ]";
+    public override string GetStatus() => _isComplete ? "[✓]" : "[ ]";
 
     public override string SaveFormat() => $"Simple,{_name},{_description},{_points},{_isComplete}";
 }
