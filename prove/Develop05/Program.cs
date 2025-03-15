@@ -161,6 +161,8 @@ class GoalTracker
         }
         Console.WriteLine($"Current Points: {_totalScore} pts\n");
     }
+    
+    string fileName = "goals.txt";
 
     public void SaveGoals()
     {
