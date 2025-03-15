@@ -10,9 +10,7 @@ abstract class Goal
     protected int _points;
     protected bool _isComplete;
 
-    public Goal (string name, 
-    string description, 
-    int points)
+    public Goal(string name, string description, int points)
     {
         _name = name;
         _description = description;
@@ -30,9 +28,7 @@ abstract class Goal
 // Simple goal that can be completed once
 class SimpleGoal : Goal
 {
-    public SimpleGoal(string name, 
-    string description, 
-    int points) : base(name, description, points) { }
+    public SimpleGoal(string name, string description, int points) : base(name, description, points) { }
 
     public override void RecordEvent()
     {
@@ -197,13 +193,21 @@ class Program
         GoalTracker tracker = new GoalTracker();
         while (true)
         {
-            Console.WriteLine("1. Create Goal 2. Record Event 3. Display Goals 4. Save 5. Load 6. Exit");
+            Console.WriteLine("Welcome to The Goals Menu:");
+            Console.WriteLine("1. Create a New Goal");
+            Console.WriteLine("2. List Goals");
+            Console.WriteLine("3. Save Goals");
+            Console.WriteLine("4. Load Goals");
+            Console.WriteLine("5. Record Event");
+            Console.WriteLine("6. Quit");
+            Console.Write("Select a choice from the Menu: ");
+            
             int choice = int.Parse(Console.ReadLine());
             if (choice == 1) tracker.CreateGoal();
-            else if (choice == 2) tracker.RecordEvent();
-            else if (choice == 3) tracker.DisplayGoals();
-            else if (choice == 4) tracker.SaveGoals();
-            else if (choice == 5) tracker.LoadGoals();
+            else if (choice == 2) tracker.DisplayGoals();
+            else if (choice == 3) tracker.SaveGoals();
+            else if (choice == 4) tracker.LoadGoals();
+            else if (choice == 5) tracker.RecordEvent();
             else break;
         }
     }
