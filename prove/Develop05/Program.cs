@@ -18,10 +18,10 @@ abstract class Goal
         _isComplete = false;
     }
 
-    public abstract void RecordEvent();
+    public abstract void RecordEvent(ref int totalPoints);
     public abstract string GetStatus();
     public abstract string SaveFormat();
-    
+
     public int GetPoints() => _points;
 }
 
@@ -30,14 +30,22 @@ class SimpleGoal : Goal
 {
     public SimpleGoal(string name, string description, int points) : base(name, description, points) { }
 
-    public override void RecordEvent()
+    public override void RecordEvent(ref int totalPoints)
     {
-        _isComplete = true;
-        Console.WriteLine($"Goal '{_name}' completed! You gained {_points} points.");
+        if (!_isComplete)
+        {
+            _isComplete = true;
+            totalPoints += _points;
+            Console.WriteLine($"Goal '{_name}' completed! You gained {_points} points.");
+        }
+        else
+        {
+            Console.WriteLine($"Goal '{_name}' is already completed.");
+        }
     }
 
     public override string GetStatus() => _isComplete ? "[X]" : "[ ]";
-    
+
     public override string SaveFormat() => $"Simple,{_name},{_description},{_points},{_isComplete}";
 }
 
@@ -46,13 +54,14 @@ class EternalGoal : Goal
 {
     public EternalGoal(string name, string description, int points) : base(name, description, points) { }
 
-    public override void RecordEvent()
+    public override void RecordEvent(ref int totalPoints)
     {
+        totalPoints += _points;
         Console.WriteLine($"Goal '{_name}' recorded! You gained {_points} points.");
     }
 
     public override string GetStatus() => "[∞]";
-    
+
     public override string SaveFormat() => $"Eternal,{_name},{_description},{_points}";
 }
 
@@ -63,7 +72,7 @@ class ChecklistGoal : Goal
     private int _currentCount;
     private int _bonus;
 
-    public ChecklistGoal(string name, string description, int points, int targetCount, int bonus) 
+    public ChecklistGoal(string name, string description, int points, int targetCount, int bonus)
         : base(name, description, points)
     {
         _targetCount = targetCount;
@@ -71,10 +80,10 @@ class ChecklistGoal : Goal
         _bonus = bonus;
     }
 
-    public override void RecordEvent()
+    public override void RecordEvent(ref int totalPoints)
     {
         _currentCount++;
-        int totalPoints = _points;
+        totalPoints += _points;
 
         if (_currentCount >= _targetCount)
         {
@@ -89,7 +98,7 @@ class ChecklistGoal : Goal
     }
 
     public override string GetStatus() => _isComplete ? "[X]" : $"[{_currentCount}/{_targetCount}]";
-    
+
     public override string SaveFormat() => $"Checklist,{_name},{_description},{_points},{_targetCount},{_currentCount},{_bonus}";
 }
 
@@ -101,12 +110,9 @@ class GoalTracker
 
     public void CreateGoal()
     {
-        Console.WriteLine("Choose a goal type:");
-        Console.WriteLine("1. Simple");
-        Console.WriteLine("2. Eternal");
-        Console.WriteLine("3. Checklist");
+        Console.WriteLine("Choose a goal type: 1. Simple  2. Eternal  3. Checklist");
         int choice = int.Parse(Console.ReadLine());
-        
+
         Console.Write("Enter goal name: ");
         string name = Console.ReadLine();
         Console.Write("Enter description: ");
@@ -140,18 +146,17 @@ class GoalTracker
             Console.WriteLine($"{i + 1}. {_goals[i].GetStatus()} {_goals[i].SaveFormat()}");
         }
         int choice = int.Parse(Console.ReadLine()) - 1;
-        _goals[choice].RecordEvent();
-        _totalScore += _goals[choice].GetPoints();
+        _goals[choice].RecordEvent(ref _totalScore);
     }
 
     public void DisplayGoals()
     {
-        Console.WriteLine("Your Goals:");
+        Console.WriteLine("\nYour Goals:");
         foreach (var goal in _goals)
         {
             Console.WriteLine($"{goal.GetStatus()} {goal.SaveFormat()}");
         }
-        Console.WriteLine($"Total Score: {_totalScore}");
+        Console.WriteLine($"Current Points: {_totalScore} pts\n");
     }
 
     public void SaveGoals()
@@ -164,6 +169,7 @@ class GoalTracker
                 writer.WriteLine(goal.SaveFormat());
             }
         }
+        Console.WriteLine("Goals successfully saved.");
     }
 
     public void LoadGoals()
@@ -184,8 +190,15 @@ class GoalTracker
                 else if (parts[0] == "Checklist")
                     _goals.Add(new ChecklistGoal(parts[1], parts[2], int.Parse(parts[3]), int.Parse(parts[4]), int.Parse(parts[6])));
             }
+            Console.WriteLine("Goals successfully loaded.");
+        }
+        else
+        {
+            Console.WriteLine("No saved goals found.");
         }
     }
+
+    public int GetTotalScore() => _totalScore;
 }
 
 // Main Program
@@ -196,22 +209,30 @@ class Program
         GoalTracker tracker = new GoalTracker();
         while (true)
         {
-            Console.WriteLine("Welcome to The Goals Menu:");
+            Console.WriteLine("\nWelcome to The Goals Menu:");
             Console.WriteLine("1. Create a New Goal");
             Console.WriteLine("2. List Goals");
             Console.WriteLine("3. Save Goals");
             Console.WriteLine("4. Load Goals");
             Console.WriteLine("5. Record Event");
             Console.WriteLine("6. Quit");
+            Console.WriteLine($"Current Points: {tracker.GetTotalScore()} pts");
             Console.Write("Select a choice from the Menu: ");
-            
-            int choice = int.Parse(Console.ReadLine());
+
+            int choice;
+            if (!int.TryParse(Console.ReadLine(), out choice))
+            {
+                Console.WriteLine("Invalid input. Please enter a number between 1 and 6.");
+                continue;
+            }
+
             if (choice == 1) tracker.CreateGoal();
             else if (choice == 2) tracker.DisplayGoals();
             else if (choice == 3) tracker.SaveGoals();
             else if (choice == 4) tracker.LoadGoals();
             else if (choice == 5) tracker.RecordEvent();
-            else break;
+            else if (choice == 6) break;
+            else Console.WriteLine("Invalid choice. Please enter a number between 1 and 6.");
         }
     }
 }
