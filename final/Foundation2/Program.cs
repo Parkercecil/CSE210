@@ -123,13 +123,13 @@ class Program
     static void Main()
     {
         Address address1 = new Address("123 Main St", "New York", "NY", "USA");
-        Customer customer1 = new Customer("John Doe", address1);
+        Customer customer1 = new Customer("Gabby Longheart", address1);
         Order order1 = new Order(customer1);
         order1.AddProduct(new Product("Laptop", "L001", 800, 1));
         order1.AddProduct(new Product("Mouse", "M001", 20, 2));
 
         Address address2 = new Address("456 Maple Ave", "Toronto", "ON", "Canada");
-        Customer customer2 = new Customer("Jane Smith", address2);
+        Customer customer2 = new Customer("Brigham Young", address2);
         Order order2 = new Order(customer2);
         order2.AddProduct(new Product("Monitor", "MO001", 150, 1));
         order2.AddProduct(new Product("Keyboard", "K001", 50, 1));
