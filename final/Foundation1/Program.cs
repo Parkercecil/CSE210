@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-
+// Abstract class defining common behavior
 abstract class MediaContent
 {
     public string Title { get; set; }
@@ -14,7 +14,7 @@ abstract class MediaContent
     }
 }
 
-
+// Comment class
 class Comment
 {
     public string CommenterName { get; set; }
@@ -27,7 +27,7 @@ class Comment
     }
 }
 
-
+// Video class inheriting from MediaContent
 class Video : MediaContent
 {
     public int LengthInSeconds { get; set; }
@@ -57,7 +57,7 @@ class Video : MediaContent
         {
             Console.WriteLine($"- {comment.CommenterName}: {comment.Text}");
         }
-        Console.WriteLine("--------------------------------------");
+        Console.WriteLine("----------------------------------");
     }
 }
 
@@ -65,12 +65,12 @@ class Program
 {
     static void Main()
     {
-        
+        // Creating videos
         Video video1 = new Video("C# OOP Tutorial", "Tech Guru", 600);
         Video video2 = new Video("Intro to Abstraction", "Code Academy", 450);
         Video video3 = new Video("YouTube Analytics 101", "Data Insights", 720);
 
-        
+        // Adding comments
         video1.AddComment(new Comment("Alice", "Great explanation!"));
         video1.AddComment(new Comment("Bob", "Very helpful, thanks!"));
         video1.AddComment(new Comment("Charlie", "Can you make a video on inheritance?"));
@@ -83,10 +83,10 @@ class Program
         video3.AddComment(new Comment("Henry", "How can I track my own videos?"));
         video3.AddComment(new Comment("Isabel", "Loved the breakdown!"));
 
-        
+        // Storing videos in a list
         List<Video> videos = new List<Video> { video1, video2, video3 };
 
-
+        // Displaying video information
         foreach (var video in videos)
         {
             video.DisplayVideoInfo();
